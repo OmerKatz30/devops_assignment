@@ -1,3 +1,4 @@
+import click
 import boto3
 import os
 import pandas as pd
@@ -6,7 +7,6 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env
 load_dotenv()
-
 
 class S3PhoneBookManager:
     def __init__(self, bucket_name, s3_file):
@@ -24,7 +24,6 @@ class S3PhoneBookManager:
         try:
             response = self.s3_client.get_object(Bucket=self.bucket_name, Key=self.s3_file)
             csv_content = response['Body'].read().decode('utf-8')
-            print(csv_content)
             df = pd.read_csv(StringIO(csv_content))
             return df
         except Exception as e:
@@ -45,7 +44,7 @@ class S3PhoneBookManager:
         """Add a new record to the S3 PhoneBook CSV."""
         df = self.download_file()
         new_record = pd.DataFrame([{'Name': name, 'Phone': phone, 'Email': email}])
-        df = pd.concat([df, new_record], ignore_index=True)  # Use pd.concat instead of df.append
+        df = pd.concat([df, new_record], ignore_index=True)
         self.upload_file(df)
         print(f"Record added: {new_record.to_dict('records')[0]}")
 
@@ -54,8 +53,10 @@ class S3PhoneBookManager:
         df = self.download_file()
         record = df[df['Name'] == name]
         if not record.empty:
+            print(f"Record found: {record.to_dict('records')[0]}")
             return record.to_dict('records')[0]
         else:
+            print("Record not found.")
             return None
 
     def download_to_local(self, local_path):
@@ -68,47 +69,43 @@ class S3PhoneBookManager:
             raise e
 
 
-if __name__ == "__main__":
-    #Sanity testing
+@click.group()
+def cli():
+    """CLI group for managing the PhoneBook."""
+    pass
 
-    # Load environment variables for bucket and file
+
+@cli.command()
+@click.argument('name')
+@click.argument('phone')
+@click.argument('email')
+def add(name, phone, email):
+    """Add a new record to the PhoneBook."""
     bucket_name = os.getenv("BUCKET_NAME")
     s3_file = os.getenv("S3_FILE")
-
-    # Initialize the S3PhoneBookManager
     manager = S3PhoneBookManager(bucket_name, s3_file)
+    manager.add_record(name, phone, email)
 
-    # Test adding records
-    print("\nTesting add_record...")
-    manager.add_record("Alice", "1234567890", "alice@example.com")
-    print("Added record: Alice, 1234567890, alice@example.com")
-    manager.add_record("Bob", "9876543210", "bob@example.com")
-    print("Added record: Bob, 9876543210, bob@example.com")
 
-    # Test retrieving records
-    print("\nTesting retrieve_record...")
-    alice_record = manager.retrieve_record("Alice")
-    if alice_record:
-        print(f"Record found for Alice: {alice_record}")
-    else:
-        print("No record found for Alice.")
+@cli.command()
+@click.argument('name')
+def get(name):
+    """Retrieve a record by name from the PhoneBook."""
+    bucket_name = os.getenv("BUCKET_NAME")
+    s3_file = os.getenv("S3_FILE")
+    manager = S3PhoneBookManager(bucket_name, s3_file)
+    manager.retrieve_record(name)
 
-    bob_record = manager.retrieve_record("Bob")
-    if bob_record:
-        print(f"Record found for Bob: {bob_record}")
-    else:
-        print("No record found for Bob.")
 
-    # Test downloading the updated file to a local path
-    print("\nTesting download_to_local...")
-    local_path = "./local_phonebook.csv"
+@cli.command()
+@click.argument('local_path', type=click.Path())
+def download(local_path):
+    """Download the PhoneBook CSV to a local path."""
+    bucket_name = os.getenv("BUCKET_NAME")
+    s3_file = os.getenv("S3_FILE")
+    manager = S3PhoneBookManager(bucket_name, s3_file)
     manager.download_to_local(local_path)
 
-    # Verify the updated file was downloaded locally
-    if os.path.exists(local_path):
-        print(f"Updated PhoneBook successfully downloaded to: {local_path}")
-        with open(local_path, 'r') as f:
-            print("Updated PhoneBook contents:")
-            print(f.read())
-    else:
-        print("Updated file download failed.")
+
+if __name__ == "__main__":
+    cli()
