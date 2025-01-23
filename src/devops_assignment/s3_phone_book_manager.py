@@ -68,23 +68,47 @@ class S3PhoneBookManager:
             raise e
 
 
-
 if __name__ == "__main__":
+    #Sanity testing
+
     # Load environment variables for bucket and file
     bucket_name = os.getenv("BUCKET_NAME")
     s3_file = os.getenv("S3_FILE")
-    test_user_name = 'test'
 
     # Initialize the S3PhoneBookManager
     manager = S3PhoneBookManager(bucket_name, s3_file)
 
-    # Test downloading the file to a local path
+    # Test adding records
+    print("\nTesting add_record...")
+    manager.add_record("Alice", "1234567890", "alice@example.com")
+    print("Added record: Alice, 1234567890, alice@example.com")
+    manager.add_record("Bob", "9876543210", "bob@example.com")
+    print("Added record: Bob, 9876543210, bob@example.com")
+
+    # Test retrieving records
+    print("\nTesting retrieve_record...")
+    alice_record = manager.retrieve_record("Alice")
+    if alice_record:
+        print(f"Record found for Alice: {alice_record}")
+    else:
+        print("No record found for Alice.")
+
+    bob_record = manager.retrieve_record("Bob")
+    if bob_record:
+        print(f"Record found for Bob: {bob_record}")
+    else:
+        print("No record found for Bob.")
+
+    # Test downloading the updated file to a local path
     print("\nTesting download_to_local...")
     local_path = "./local_phonebook.csv"
     manager.download_to_local(local_path)
 
-    # Verify the file was downloaded locally
+    # Verify the updated file was downloaded locally
     if os.path.exists(local_path):
-        print(f"File successfully downloaded to: {local_path}")
+        print(f"Updated PhoneBook successfully downloaded to: {local_path}")
+        with open(local_path, 'r') as f:
+            print("Updated PhoneBook contents:")
+            print(f.read())
     else:
-        print("File download failed.")
+        print("Updated file download failed.")
