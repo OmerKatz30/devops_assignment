@@ -58,8 +58,6 @@ devops_assignment/
 │   │   ├── __init__.py  
 │   │   ├── s3_phone_book_manager.py  
 │   │   └── app.py  
-├── tests/  
-│   ├── test_manager.py  
 ├── .env.example  
 ├── .gitignore  
 ├── .dockerignore  
@@ -76,10 +74,6 @@ devops_assignment/
    Example: `/get John Doe`
 3. **Download the PhoneBook**: `/download`
 
-## 🧪 Testing
-Run automated tests using **pytest**:
-1. Install `pytest`: `pip install pytest`
-2. Run the tests: `pytest tests/`
 
 ## 🤔 Troubleshooting
 1. **The bot doesn’t respond**:
