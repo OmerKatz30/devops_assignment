@@ -5,7 +5,7 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from threading import Thread
 import os
-from src.devops_assignment.s3_phone_book_manager import S3PhoneBookManager
+from devops_assignment.s3_phone_book_manager import S3PhoneBookManager
 from dotenv import load_dotenv
 
 # Load environment variables

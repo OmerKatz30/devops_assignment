@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pyth
 EXPOSE 3000
 
 # Set Flask environment variables
-ENV FLASK_APP=app.py
+ENV FLASK_APP=src/devops_assignment/app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run Flask app
