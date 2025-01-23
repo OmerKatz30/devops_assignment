@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devops_assignment"
+version = "0.1.0"
+description = "A Slack bot integrated with AWS S3 to manage a PhoneBook CSV."
+dependencies = [
+    "boto3",
+    "pandas",
+    "python-dotenv",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
