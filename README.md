@@ -74,6 +74,17 @@ devops_assignment/
    Example: `/get John Doe`
 3. **Download the PhoneBook**: `/download`
 
+## 🖥️ CLI Usage
+
+You can also manage the PhoneBook using the CLI.
+
+1. **Add a record**:
+   python src/devops_assignment/s3_phone_book_manager.py add "John Doe" "1234567890" "johndoe@example.com"
+2. **Retrieve a record**:
+   python src/devops_assignment/s3_phone_book_manager.py get "John Doe"
+3.  **Download the PhoneBook CSV**:
+   python src/devops_assignment/s3_phone_book_manager.py download ./local_phonebook.csv
+
 
 ## 🤔 Troubleshooting
 1. **The bot doesn’t respond**:
