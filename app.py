@@ -1,4 +1,4 @@
-from time import sleep
+from pathlib import Path
 
 from flask import Flask, request, jsonify
 from slack_sdk import WebClient
@@ -86,8 +86,10 @@ def handle_slack_command():
 def process_download(user_id):
     """Process the /download command in the background."""
     try:
-        # Define the local file path
-        local_file = os.path.join(os.getcwd(), "phonebook.csv")
+        # Define the local file path in the Downloads folder
+        downloads_folder = str(Path.home() / "Downloads")
+        local_file = os.path.join(downloads_folder, "phonebook.csv")  # Full path to the file
+
         # Step 1: Download the file from S3
         s3_manager.download_to_local(local_file)
         print(f"File downloaded locally to: {local_file}")
