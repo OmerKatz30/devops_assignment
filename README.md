@@ -58,7 +58,7 @@ devops_assignment/
 │   │   ├── __init__.py  
 │   │   ├── s3_phone_book_manager.py  
 │   │   └── app.py  
-├── pyproject.toml 
+├── pyproject.toml  
 ├── .gitignore  
 ├── .dockerignore  
 ├── Dockerfile  
