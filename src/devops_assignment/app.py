@@ -111,7 +111,7 @@ def process_download(user_id):
         print(f"FileNotFoundError: {e}")
         slack_client.chat_postMessage(
             channel=user_id,
-            text="An error occurred: The file could not be found."
+            text="The requested PhoneBook file could not be found in S3. Please check the S3 bucket or filename."
         )
 
     except ValueError as e:
